@@ -1,6 +1,6 @@
 # Numerical algorithms workshop
 
 ```
-python -m venv venv
+python -m venv numa
 pip install -r requirements.txt
 ```
