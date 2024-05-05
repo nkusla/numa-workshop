@@ -26,3 +26,9 @@ def plateau_function_grad(x: np.ndarray):
     df_dx = 2*x[0] - x[1]
     df_dy = 12*x[1]**3 + 15*x[1]**2 + 2*x[1] - x[0]
     return np.array([df_dx, df_dy])
+
+def diff_eq(x, y):
+	return 2*np.sin(x)
+
+def diff_analytical_sol(x, x0, y0):
+	return y0 + 2*np.cos(x0) - 2*np.cos(x)

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pylab as plt
-from utils.numerical_algo import NumericalAlgo
+from utils.numerical_algo import NumericalAlgo, ODESolver
 from typing import Tuple, Callable, List
 
 DIGITS_COUNT = 10
@@ -9,12 +9,12 @@ FIG_WIDTH = 15
 FIG_HEIGHT = 8
 CONTOUR_LEVELS = 20
 
-def plot_function2D(function: Callable, interval: Tuple[float, float]):
+def plot_function2D(function: Callable, interval: Tuple[float, float], color: str="r", label=""):
 	x = np.linspace(interval[0], interval[1], LINSPACE_SAMPLE)
 	y = function(x)
-	plt.plot(x, y, color="r")
+	plt.plot(x, y, color, label=label)
 
-def set_plot_attributes(title: str, lim: Tuple[float, float]):
+def set_plot_attributes(title: str, xlim: Tuple[float, float], ylim: Tuple[float, float]):
 	plt.figure(figsize=(15, 8))
 	plt.axis('equal')
 	plt.title(title)
@@ -23,33 +23,32 @@ def set_plot_attributes(title: str, lim: Tuple[float, float]):
 	plt.ylabel("y")
 	plt.axvline(0, color='k', linewidth=.5)
 	plt.grid(True, linestyle="--")
-	plt.xlim(lim)
-	plt.ylim(lim)
+	plt.xlim(xlim)
+	plt.ylim(ylim)
 
 def visualize_bisection(algo: NumericalAlgo, lim: Tuple[float, float]):
 	solution = round(algo.result[-1], DIGITS_COUNT)
 	value = round(algo.function(solution), DIGITS_COUNT)
 	title = f"Bisection method\nIterations: {len(algo.result)}\nSolution: {solution}\nValue: {value}"
 
-	set_plot_attributes(title, lim)
-
-	x_max = np.max(np.abs(algo.result))
-	plot_interval = (-x_max, x_max)
-	plot_function2D(algo.function, plot_interval)
-
-	x = np.array(algo.result)
-	y = algo.function(x)
-	plt.scatter(x, y, s=20, c='b')
-
-	plt.show()
+	visualize_numerical_algo(algo, lim, title)
 
 def visualize_newton_rhapson(algo: NumericalAlgo, lim: Tuple[float, float]):
 	solution = round(algo.result[-1], DIGITS_COUNT)
 	value = round(algo.function(solution), DIGITS_COUNT)
-
 	title = f"Netwon-Rhapson method\nIterations: {len(algo.result)}\nSolution: {solution}\nValue: {value}"
 
-	set_plot_attributes(title, lim)
+	visualize_numerical_algo(algo, lim, title)
+
+def visualize_secant(algo: NumericalAlgo, lim: Tuple[float, float]):
+	solution = round(algo.result[-1], DIGITS_COUNT)
+	value = round(algo.function(solution), DIGITS_COUNT)
+	title = f"Secant method\nIterations: {len(algo.result)}\nSolution: {solution}\nValue: {value}"
+
+	visualize_numerical_algo(algo, lim, title)
+
+def visualize_numerical_algo(algo: NumericalAlgo, lim: Tuple[float, float], title):
+	set_plot_attributes(title, lim, lim)
 
 	x_max = np.max(np.abs(algo.result))
 	plot_interval = (-x_max, x_max)
@@ -61,8 +60,17 @@ def visualize_newton_rhapson(algo: NumericalAlgo, lim: Tuple[float, float]):
 
 	plt.show()
 
-def visualize_secant(algo: NumericalAlgo, lim: Tuple[float, float]):
-	pass
+def visualize_ode_solver(solver: ODESolver, analytical_sol = None):
+	plot_interval = (solver.x[0], solver.x[-1])
+	set_plot_attributes(type(solver).__name__, plot_interval, (-5, 5))
+
+	plt.scatter(solver.x, solver.y, s=10, c='b', label="numerical")
+
+	if analytical_sol != None:
+		plot_function2D(analytical_sol, plot_interval, label="analytical")
+
+	plt.legend()
+	plt.show()
 
 def plot_run(algo: NumericalAlgo, x_range: np.ndarray, plot_3d=False):
 	run = algo.result
