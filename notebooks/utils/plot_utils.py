@@ -14,7 +14,7 @@ def plot_function2D(function: Callable, interval: Tuple[float, float], color: st
 	y = function(x)
 	plt.plot(x, y, color, label=label)
 
-def set_plot_attributes(title: str, xlim: Tuple[float, float], ylim: Tuple[float, float]):
+def set_plot_attributes(title: str, xlim: Tuple[float, float], ylim: Tuple[float, float] = None):
 	plt.figure(figsize=(15, 8))
 	plt.axis('equal')
 	plt.title(title)
@@ -24,7 +24,8 @@ def set_plot_attributes(title: str, xlim: Tuple[float, float], ylim: Tuple[float
 	plt.axvline(0, color='k', linewidth=.5)
 	plt.grid(True, linestyle="--")
 	plt.xlim(xlim)
-	plt.ylim(ylim)
+	if ylim != None:
+		plt.ylim(ylim)
 
 def visualize_bisection(algo: NumericalAlgo, lim: Tuple[float, float]):
 	solution = round(algo.result[-1], DIGITS_COUNT)
@@ -68,6 +69,22 @@ def visualize_ode_solver(solver: ODESolver, analytical_sol = None):
 
 	if analytical_sol != None:
 		plot_function2D(analytical_sol, plot_interval, label="analytical")
+
+	plt.legend()
+	plt.show()
+
+def plot_multiple_ode_solutions(solver: ODESolver, title: str = ""):
+	colors = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
+	num_solutions = len(solver.y[0])
+	plot_interval = (solver.x[0], solver.x[-1])
+
+	set_plot_attributes(title, plot_interval)
+
+	sols = [v.reshape(-1, 1) for v in solver.y]
+	sols = np.concatenate(sols, axis = 1)
+
+	for i in range(num_solutions):
+		plt.plot(solver.x, sols[i, :], color=colors[i], label=f"sol_{i+1}")
 
 	plt.legend()
 	plt.show()
