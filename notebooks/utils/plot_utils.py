@@ -130,7 +130,7 @@ def plot_run(algo: NumericalAlgo, x_range: np.ndarray, plot_3d=False):
 	plt.tight_layout()
 	plt.show()
 
-def plot_multiple_runs(algos: List[NumericalAlgo], x_range: np.ndarray):
+def plot_multiple_runs(algos: List[NumericalAlgo], x_range: np.ndarray, labels: List[str]):
 	colors = ['k', 'b', 'g', 'r', 'c', 'm', 'y']
 
 	plt.figure(figsize=(FIG_HEIGHT, FIG_HEIGHT))
@@ -144,7 +144,7 @@ def plot_multiple_runs(algos: List[NumericalAlgo], x_range: np.ndarray):
 	plt.ylabel('x_2')
 	plt.title('Contour plot', fontsize=10)
 
-	labels = [type(a).__name__ for a in algos]
+	#labels = [type(a).__name__ for a in algos]
 
 	for i, algo in enumerate(algos):
 		run = algo.result
