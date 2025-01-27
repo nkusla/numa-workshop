@@ -1,4 +1,5 @@
 .vscode
 numa
+venv
 __pycache__
 *.sh
